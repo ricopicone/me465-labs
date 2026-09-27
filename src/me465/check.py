@@ -9,7 +9,11 @@ from __future__ import annotations
 import platform
 import sys
 
-GREEN, RED, RESET = "\033[32m", "\033[31m", "\033[0m"
+# Colour only on a terminal: pasted into the checkpoint, escape codes are noise.
+if sys.stdout.isatty():
+    GREEN, RED, RESET = "\033[32m", "\033[31m", "\033[0m"
+else:
+    GREEN = RED = RESET = ""
 
 
 def ok(msg: str) -> None:
@@ -54,7 +58,7 @@ def main() -> None:
     except Exception as e:  # the remote side reports its own error text
         fail(f"could not load the course scene ({e})",
              f"make sure {SCENE} exists; `git pull` or re-download the course repo.")
-    ok("loaded the course scene: a UR5 on the floor")
+    ok("loaded the course scene: a UR5 on its stand")
 
     import numpy as np
 
