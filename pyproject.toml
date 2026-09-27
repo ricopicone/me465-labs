@@ -1,0 +1,23 @@
+[project]
+name = "me465"
+version = "0.1.0"
+description = "Simulation labs for ME 465 / MME 565 Robotics: CoppeliaSim through its remote API"
+readme = "README.md"
+authors = [
+    { name = "Rico Picone", email = "rpicone@stmartin.edu" }
+]
+requires-python = ">=3.12"
+dependencies = [
+    "coppeliasim-zmqremoteapi-client>=2.0.4",
+    "jupyterlab>=4.6.4",
+    "matplotlib>=3.11.2",
+    "modern-robotics>=1.1.1",
+    "numpy>=2.5.3",
+]
+
+[project.scripts]
+check = "me465.check:main"
+
+[build-system]
+requires = ["uv_build>=0.11.23,<0.12.0"]
+build-backend = "uv_build"
