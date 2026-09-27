@@ -32,50 +32,53 @@ def main() -> None:
 
     try:
         import numpy  # noqa: F401
-        import modern_robotics  # noqa: F401
+        import screws
         import coppeliasim_zmqremoteapi_client  # noqa: F401
     except ImportError as e:
         fail(f"a Python package is missing ({e.name})",
              "run the command from inside the me465-labs folder, as `uv run check`, so uv installs them.")
-    ok(f"Python {platform.python_version()} with numpy, modern_robotics and the CoppeliaSim client")
+    ok(f"Python {platform.python_version()} with numpy, screws {screws.__version__} and the CoppeliaSim client")
 
-    from me465.sim import PORT, SCENE, NotRunning, Sim
+    from screws.coppelia import SimulatorNotRunning, connect
+
+    from me465 import SCENE, close, open_lab, settle
 
     try:
-        s = Sim.connect()
-    except NotRunning:
-        fail(f"CoppeliaSim is not running (nothing on port {PORT})",
+        sim = connect()
+    except SimulatorNotRunning:
+        fail("CoppeliaSim is not running (nothing answered on port 23000)",
              "open CoppeliaSim, wait for its window, then run this again. "
              "If it is open, check that a firewall is not blocking localhost.")
-    version = s.version()
+    v = sim.getInt32Param(sim.intparam_program_full_version)
+    version = f"{v // 1000000}.{v // 10000 % 100}.{v // 100 % 100}"
+    sim._screws_client.socket.close()
     ok(f"connected to CoppeliaSim {version}")
-    major, minor = (int(x) for x in version.split(".")[:2])
-    if (major, minor) < (4, 10):
-        fail(f"CoppeliaSim {version} is too old", "install the current version (4.10 or newer, the Edu edition) from coppeliarobotics.com.")
+    if (v // 1000000, v // 10000 % 100) < (4, 10):
+        fail(f"CoppeliaSim {version} is too old",
+             "install the current version (4.10 or newer, the Edu edition) from coppeliarobotics.com.")
 
+    import numpy as np
+
+    target = [0.3, -0.5, 0.8, 0.0, 0.4, 0.0]
     try:
-        s.load_scene()
+        scene, arm = open_lab()
     except Exception as e:  # the remote side reports its own error text
         fail(f"could not load the course scene ({e})",
              f"make sure {SCENE} exists; `git pull` or re-download the course repo.")
     ok("loaded the course scene: a UR5 on its stand")
-
-    import numpy as np
-
     try:
-        s.start()
-        s.set_joint_targets([0.3, -0.5, 0.8, 0.0, 0.4, 0.0])
-        reached = s.settle()
-        tool = s.tool_pose()
+        arm.command_positions(target)
+        reached = settle(scene, arm)
+        tip = arm.tip_frame()
     finally:
-        s.stop()
-    if np.max(np.abs(reached - [0.3, -0.5, 0.8, 0.0, 0.4, 0.0])) > 1e-2:
+        close(scene)
+    if np.max(np.abs(reached - target)) > 1e-2:
         fail(f"the arm did not reach the commanded angles (got {np.round(reached, 3)})",
              "reload the scene (File > Open scene) and run again; if it persists, tell your instructor.")
-    ok(f"stepped the physics and moved the arm; tool at {np.round(tool[:3, 3], 3)} m")
+    ok(f"stepped the physics and moved the arm; tip at {np.round(tip[:3, 3], 3)} m")
 
-    print(f"\nme465 check PASSED — CoppeliaSim {version}, {platform.system()} {platform.machine()}, "
-          f"Python {platform.python_version()}")
+    print(f"\nme465 check PASSED — CoppeliaSim {version}, screws {screws.__version__}, "
+          f"{platform.system()} {platform.machine()}, Python {platform.python_version()}")
 
 
 if __name__ == "__main__":

@@ -11,10 +11,13 @@ Notebook As → HTML**, then print the HTML to PDF.
 
 ## What to submit
 
-1. **Your own forward kinematics.** Write `fk_space(M, Slist, thetalist)`
-   yourself, as the product of exponentials in the notes: use
-   `mr.MatrixExp6` and `mr.VecTose3`, but not `mr.FKinSpace`. Show that it
-   agrees with `mr.FKinSpace` for three configurations of your choosing.
+1. **Your own forward kinematics.** Write `my_fk_space(M, S, theta)`
+   yourself, as the product of exponentials in the notes: use `sc.exp6` and
+   `sc.vec_to_se3` (MR's `MatrixExp6` and `VecTose3`), but not `sc.fk_space`.
+   Show that it agrees with `sc.fk_space` for three configurations of your
+   choosing; `screws.testing.check(my_fk_space, sc.fk_space, cases)`, with each
+   case a tuple `(M, S, theta)`, does the
+   comparison for you.
 
 2. **The scene's model of the UR5.** Your `S_scene` and `M_scene`, read from
    the simulator. For each screw axis, say in a sentence why it does or does

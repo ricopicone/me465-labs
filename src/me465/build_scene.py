@@ -7,19 +7,20 @@ in it is written down. Run it against a running CoppeliaSim:
 
 It starts from an empty scene (floor and lights), loads the UR5 that ships with
 CoppeliaSim, stands it on a 0.4 m pedestal, removes the demo script that would otherwise drive the arm on its
-own, marks the flange with a `tool` frame, and saves `scenes/ur5.ttt`.
+own, marks the flange with a `tip` frame, and saves `scenes/ur5.ttt`.
 """
 
-from me465.sim import SCENE, Sim
+from screws.coppelia import connect
 
-#: Height of the stand the UR5 is bolted to, in metres.
-PEDESTAL = 0.4
+from me465 import PEDESTAL, SCENE
 
 
 def build() -> None:
-    s = Sim.connect()
-    sim = s.sim
-    s.stop()
+    sim = connect()
+    if sim.getSimulationState() != sim.simulation_stopped:
+        sim.stopSimulation()
+        while sim.getSimulationState() != sim.simulation_stopped:
+            pass
     sim.closeScene()  # leaves the default empty scene: floor, lights, camera
 
     models = sim.getStringParam(sim.stringparam_resourcesdir) + "/models"
@@ -40,12 +41,12 @@ def build() -> None:
     # poses. Students' code is the only thing that moves the robot here.
     sim.removeObjects([sim.getObject("/UR5/Script")])
 
-    # The flange frame is a force sensor called `connection`, which is an odd
-    # thing to ask a student to read a pose from. A dummy in the same place,
-    # named for what it is, is what they query.
+    # The flange frame is a force sensor called `connection`. A dummy in the
+    # same place called `tip` is what screws' Arm takes as the tip, and what
+    # `arm.tip_frame()` reads.
     connection = sim.getObject("/UR5/connection")
     tool = sim.createDummy(0.02)
-    sim.setObjectAlias(tool, "tool")
+    sim.setObjectAlias(tool, "tip")
     sim.setObjectParent(tool, connection, False)
     sim.setObjectMatrix(tool, [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0], connection)
 

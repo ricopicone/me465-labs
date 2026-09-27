@@ -99,8 +99,12 @@ model.
 
 ## What is in here
 
-- `src/me465/sim.py`: the bridge to CoppeliaSim (connect, step, read and
-  command joints, read frames).
+- The robotics and the simulator bridge come from the
+  [`screws`](https://pypi.org/project/screws/) package: Modern Robotics'
+  functions under snake_case names (MR's own names work too), plus
+  `screws.coppelia` for driving CoppeliaSim.
+- `src/me465/__init__.py`: `open_lab`, `settle` and `close`, the three
+  helpers a lab day needs.
 - `src/me465/scenes/ur5.ttt`: the course scene, built by
   `src/me465/build_scene.py` from CoppeliaSim's own UR5 model.
 - `labs/`: one folder per lab.
