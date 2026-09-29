@@ -84,14 +84,20 @@ the output to office hours or post it. Do not wait until the lab.
 
 ## On a lab day
 
-Open CoppeliaSim, then start JupyterLab from this folder:
+Open CoppeliaSim. In a terminal in this folder, get the latest version of the
+labs, then open the day's notebook:
 
 ```
-uv run jupyter lab
+uv run update
+uv run lab sim1
 ```
 
-and open the lab's notebook under `labs/`. Each lab has its own folder with the
-notebook you work in during class and a `README.md` saying what to submit.
+`update` pulls the course's changes and syncs the packages (from a ZIP
+download it tells you to download again instead). `lab` copies the lab's
+notebook from `labs/` to `work/`, which is yours, and opens JupyterLab on it;
+next time it opens your copy. Never edit anything under `labs/`: the course
+updates those files, and `update` refuses to overwrite edited ones. Each lab's
+folder also has a `README.md` saying what to submit.
 
 Before you run anything, **write down what you expect it to do**. The simulator
 is the referee, and a run without a prediction teaches you nothing about your
