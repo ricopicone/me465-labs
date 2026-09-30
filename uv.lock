@@ -1291,7 +1291,7 @@ requires-dist = [
     { name = "jupyterlab", specifier = ">=4.6.4" },
     { name = "matplotlib", specifier = ">=3.11.2" },
     { name = "numpy", specifier = ">=2.5.3" },
-    { name = "screws", extras = ["coppelia", "plot"], specifier = ">=0.3.0" },
+    { name = "screws", extras = ["coppelia", "plot"], specifier = ">=0.4.1" },
 ]
 
 [[package]]
@@ -1958,14 +1958,14 @@ wheels = [
 
 [[package]]
 name = "screws"
-version = "0.4.0"
+version = "0.4.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "numpy" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/e2/66/22c94fb1454ed16468bc2542d5ff6fc406916b28464acff44511213e3f89/screws-0.4.0.tar.gz", hash = "sha256:4ca240239bf8e9b5a536cefee6acd6b474e8a494a04271eb6d85861a7af7fe79", size = 228339, upload-time = "2026-09-30T07:19:28.631Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/69/0b/c59d3e36629cb16c7f02455947689e9163d05598a02850ac61d40810cfd6/screws-0.4.1.tar.gz", hash = "sha256:5d16d2f0523c7bb2f02e2569bcb62f8d22a7c7266fab1cb35b1553d802e99350", size = 229015, upload-time = "2026-09-30T08:54:18.78Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/a3/ff/4349e3e16c73606a2a96812def77d30cd6773c21aab18d4a0ff5653530db/screws-0.4.0-py3-none-any.whl", hash = "sha256:643bfdd3f6ba23075401b71081028666e4d858ddd29e5fc10b01ec8f7e4fa4b7", size = 58466, upload-time = "2026-09-30T07:19:26.972Z" },
+    { url = "https://files.pythonhosted.org/packages/e7/2d/60742a87eb4953ba35aeed55ebcd67ac44dee2aa1eee53a22feb54e32272/screws-0.4.1-py3-none-any.whl", hash = "sha256:49b5a0bb83b17606603b260ee8c2159ce83365c9c56673f96b604db8871bbe60", size = 58916, upload-time = "2026-09-30T08:54:17.375Z" },
 ]
 
 [package.optional-dependencies]
