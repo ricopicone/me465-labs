@@ -38,6 +38,12 @@ def main() -> int:
         print("Package sync failed. Bring this output to office hours.")
         return 1
     print("up to date")
+    from me465.lab import LABS, template_changed
+
+    for lab in sorted(p.name for p in LABS.iterdir() if (p / f"{p.name}.ipynb").exists()):
+        if template_changed(lab):
+            print(f"NOTE: labs/{lab}/{lab}.ipynb changed. Your copy in work/ is untouched; to start")
+            print(f"      from the new version run: uv run lab {lab} --fresh  (your copy is kept)")
     return 0
 
 

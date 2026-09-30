@@ -95,9 +95,12 @@ uv run lab sim1
 `update` pulls the course's changes and syncs the packages (from a ZIP
 download it tells you to download again instead). `lab` copies the lab's
 notebook from `labs/` to `work/`, which is yours, and opens JupyterLab on it;
-next time it opens your copy. Never edit anything under `labs/`: the course
-updates those files, and `update` refuses to overwrite edited ones. Each lab's
-folder also has a `README.md` saying what to submit.
+next time it opens your copy. When the course has changed a lab's notebook
+since you copied it, both commands say so; `uv run lab sim1 --fresh` then sets
+your copy aside as `work/sim1-previous.ipynb` and starts from the new version.
+Never edit anything under `labs/`: the course updates those files, and
+`update` refuses to overwrite edited ones. Each lab's folder also has a
+`README.md` saying what to submit.
 
 Before you run anything, **write down what you expect it to do**. The simulator
 is the referee, and a run without a prediction teaches you nothing about your
