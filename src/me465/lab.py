@@ -34,6 +34,9 @@ def main(argv: list[str] | None = None) -> int:
     else:
         shutil.copy(template, copy)
         print(f"copied {template.relative_to(ROOT)} to {copy.relative_to(ROOT)}: work there")
+    for asset in (LABS / name).iterdir():  # figures the notebook shows, alongside the copy
+        if asset.suffix.lower() in (".png", ".jpg", ".svg", ".pdf") and not (WORK / asset.name).exists():
+            shutil.copy(asset, WORK / asset.name)
     if not launch:
         return 0
     return subprocess.call([sys.executable, "-m", "jupyterlab", str(copy)], cwd=ROOT)

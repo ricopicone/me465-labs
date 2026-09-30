@@ -13,11 +13,11 @@ Notebook As → HTML**, then print the HTML to PDF.
 ## What to submit
 
 1. **Your own forward kinematics.** Write `my_fk_space(M, S, theta)`
-   yourself, as the product of exponentials in the notes: use `sc.exp6` and
-   `sc.vec_to_se3` (MR's `MatrixExp6` and `VecTose3`), but not `sc.fk_space`.
-   Show that it agrees with `sc.fk_space` for three configurations of your
-   choosing; `screws.testing.check(my_fk_space, sc.fk_space, cases)`, with each
-   case a tuple `(M, S, theta)`, does the
+   yourself, as the product of exponentials in the notes: use `screws.exp6` and
+   `screws.vec_to_se3` (MR's `MatrixExp6` and `VecTose3`), but not
+   `screws.fk_space`. Show that it agrees with `screws.fk_space` for three
+   configurations of your choosing; `screws.testing.check(my_fk_space,
+   screws.fk_space, cases)`, with each case a tuple `(M, S, theta)`, does the
    comparison for you.
 
 2. **The scene's model of the UR5.** Your `S_scene` and `M_scene`, read from
@@ -42,7 +42,7 @@ Notebook As → HTML**, then print the HTML to PDF.
    possibilities apart, and its result.
 
 6. **The body form.** Compute $\mathcal{B}_i = [\mathrm{Ad}_{M^{-1}}]\,\mathcal{S}_i$
-   from the scene's model and show that `sc.fk_body(M_scene, B_scene, theta)`
+   from the scene's model and show that `screws.fk_body(M_scene, B_scene, theta)`
    agrees with the space form for your card.
 
 **MME 565 also:** read the body-frame screw axes $\mathcal{B}_i$ directly off
