@@ -61,3 +61,47 @@ def settle(scene, arm, seconds: float = 6.0, tol: float = 1e-5) -> np.ndarray:
 def close(scene) -> None:
     """Stop the simulation and let go of it, so the next run starts clean."""
     scene.__exit__(None, None, None)
+
+
+def joint_sliders(scene, arm, *, continuous: bool = False, settle_seconds: float = 1.5, degrees: bool = True):
+    """Six sliders that drive the arm: move one and the simulated joints follow.
+
+    Each change commands the six angles and steps the simulation until the joints
+    stop (up to `settle_seconds`), then prints where the tool ended up. By default a
+    slider sends its value when you release it; `continuous=True` sends while you
+    drag, which is livelier and slower. Returns the sliders, so a script can read or
+    set them. Needs ipywidgets (installed with the course environment).
+    """
+    import ipywidgets as widgets
+    from IPython.display import display
+
+    unit, lo, hi, step = ("deg", -180.0, 180.0, 1.0) if degrees else ("rad", -np.pi, np.pi, 0.02)
+    start = arm.theta()
+    sliders = [
+        widgets.FloatSlider(
+            value=float(np.degrees(start[i]) if degrees else start[i]),
+            min=lo, max=hi, step=step,
+            description=f"θ{i + 1} ({unit})",
+            continuous_update=continuous,
+            readout_format=".0f" if degrees else ".2f",
+            layout=widgets.Layout(width="480px"),
+        )
+        for i in range(arm.n)
+    ]
+    out = widgets.Output()
+
+    def send(_change=None):
+        values = np.array([s.value for s in sliders], dtype=float)
+        theta = np.radians(values) if degrees else values
+        arm.command_positions(theta)
+        measured = settle(scene, arm, seconds=settle_seconds)
+        with out:
+            out.clear_output(wait=True)
+            print("joints stopped at (deg):", np.round(np.degrees(measured), 1))
+            print("tool frame, in the simulator's world frame:\n", np.round(arm.tip_frame(), 3))
+
+    for s in sliders:
+        s.observe(send, names="value")
+    display(widgets.VBox([*sliders, out]))
+    send()
+    return sliders

@@ -113,7 +113,7 @@ model.
   functions under snake_case names (MR's own names work too), plus
   `screws.coppelia` for driving CoppeliaSim.
 - `src/me465/__init__.py`: `open_lab`, `settle` and `close`, the three
-  helpers a lab day needs.
+  helpers a lab day needs, and `joint_sliders`, six sliders that drive the arm.
 - `src/me465/scenes/ur5.ttt`: the course scene, built by
   `src/me465/build_scene.py` from CoppeliaSim's own UR5 model.
 - `labs/`: one folder per lab.
