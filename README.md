@@ -8,7 +8,7 @@ robot does, one time step at a time.
 ## Setting up (do this before the first lab)
 
 You need two things: CoppeliaSim, and this folder with its Python environment.
-Budget 20 minutes. When `uv run check` passes, paste its output into the setup
+Budget 30 minutes. When `uv run check` passes, paste its output into the setup
 checkpoint on the course site.
 
 ### 1. Install CoppeliaSim (the Edu edition, version 4.10)
@@ -25,48 +25,92 @@ edition).
   If your system's locale uses a comma for decimals, start it with
   `LC_NUMERIC=en_US.UTF-8 ./coppeliaSim.sh`.
 
-Open it once to make sure it starts. **Two things you can ignore:**
+Open it once to make sure it starts.
+
+**Register it.** The Edu edition is free, but it asks you to register. When the
+registration window appears, fill it in with your university email: the
+license key arrives by email, and the window then tells you where to paste it.
+Until the key arrives, the window comes back now and then; clicking **Cancel**
+closes it and CoppeliaSim keeps working. Do register, so it stops.
+
+**Two things you can ignore:**
 - CoppeliaSim's console may print a Python error ending in
   `No module named 'zmq'`. That is its own built-in Python scripting, which this
   course does not use.
 - On Windows, if the firewall asks whether CoppeliaSim may use the network, allow it
   on private networks. Your code talks to it over `localhost`.
 
-### 2. Install uv
+### 2. Open a terminal, and go somewhere sensible
 
-[uv](https://docs.astral.sh/uv/) installs the right Python and every package this
-course needs, identically on every machine. You do not need Anaconda or an
-existing Python.
+Everything below is typed into a terminal: on macOS the **Terminal** app
+(Applications → Utilities, or search for it), on Windows **PowerShell** (search
+the Start menu for it; plain Command Prompt works too).
 
-- **macOS / Linux**, in Terminal:
+A terminal is always "in" some folder, and commands act on that folder. On
+Windows it often opens in a system folder you have no business writing to, so
+the first thing to type, every time, is a move to a folder of your own. Put
+the course in your Documents:
+
+- **macOS / Linux:**
+
+```
+cd ~/Documents
+```
+
+- **Windows:**
+
+```
+cd ~\Documents
+```
+
+(`cd` is "change directory"; `~` is your home folder. `pwd` prints where you are.)
+
+### 3. Install git and uv
+
+[git](https://git-scm.com/) is how you get this folder and keep it up to date
+as the course changes. [uv](https://docs.astral.sh/uv/) installs the right
+Python and every package this course needs, identically on every machine. You
+do not need Anaconda or an existing Python.
+
+- **macOS:** git comes with Apple's command-line tools. Type `git --version`;
+  if a window offers to install the tools, accept. Then install uv:
 
 ```
 curl -LsSf https://astral.sh/uv/install.sh | sh
 ```
 
-- **Windows**, in PowerShell:
+- **Windows:** install [Git for Windows](https://git-scm.com/download/win) with
+  its default options, then in PowerShell:
 
 ```
 powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
 ```
 
-Then close and reopen the terminal so it can find `uv`.
+- **Linux:** `sudo apt install git`, then the macOS uv command.
 
-### 3. Get this folder
+Then close and reopen the terminal so it can find both, and `cd` back to
+your Documents (step 2).
 
-With git:
+### 4. Get this folder: clone it
+
+From your Documents folder:
 
 ```
 git clone https://github.com/ricopicone/me465-labs.git
+cd me465-labs
 ```
 
-Or use **Code → Download ZIP** on the GitHub page and unzip it somewhere you
-will find it again.
+That makes a folder `me465-labs` and moves you into it. **Clone; do not
+"Download ZIP" and do not "Fork."** The course updates this folder during the
+term, and `uv run update` (below) fetches those updates only for a clone of
+this repository. A ZIP has no connection to it, and a fork is a separate copy
+that falls behind. If you already did one of those, delete it and clone;
+anything you wrote in a `work/` folder can be moved into the new clone.
 
-### 4. Run the check
+### 5. Run the check
 
-Open CoppeliaSim and leave it running. In a terminal, go into the folder
-(`cd me465-labs`) and run:
+Open CoppeliaSim and leave it running. In the terminal, inside the folder
+(`cd me465-labs` if you are not already there) run:
 
 ```
 uv run check
@@ -84,7 +128,8 @@ the output to office hours or post it. Do not wait until the lab.
 
 ## On a lab day
 
-Open CoppeliaSim. In a terminal in this folder, get the latest version of the
+Open CoppeliaSim. Open a terminal and go into the folder (`cd ~/Documents/me465-labs`
+on macOS, `cd ~\Documents\me465-labs` on Windows). Get the latest version of the
 labs, then open the day's notebook:
 
 ```
@@ -92,8 +137,7 @@ uv run update
 uv run lab sim1
 ```
 
-`update` pulls the course's changes and syncs the packages (from a ZIP
-download it tells you to download again instead). `lab` copies the lab's
+`update` pulls the course's changes and syncs the packages. `lab` copies the lab's
 notebook from `labs/` to `work/`, which is yours, and opens JupyterLab on it;
 next time it opens your copy. When the course has changed a lab's notebook
 since you copied it, both commands say so; `uv run lab sim1 --fresh` then sets
