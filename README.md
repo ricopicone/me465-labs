@@ -150,6 +150,12 @@ Before you run anything, **write down what you expect it to do**. The simulator
 is the referee, and a run without a prediction teaches you nothing about your
 model.
 
+**If CoppeliaSim's view freezes or turns grey** with a yellow "ZMQ remote API server ...
+abort execution" note, do not click the note: it cuts the notebook off from the simulator.
+That was a bug in versions before 18 October 2026. Save your notebook, then run
+`uv run update`, quit and reopen CoppeliaSim, and in JupyterLab use Kernel > Restart Kernel
+and run the cells again from the top. If you already clicked it, do the same.
+
 ## What is in here
 
 - The robotics and the simulator bridge come from the

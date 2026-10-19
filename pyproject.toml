@@ -12,8 +12,14 @@ dependencies = [
     "jupyterlab>=4.6.4",
     "matplotlib>=3.11.2",
     "numpy>=2.5.3",
-    "screws[coppelia,plot]>=0.4.1",
+    "screws[coppelia,plot]>=0.7.0",
 ]
+
+[dependency-groups]
+dev = ["pytest>=8"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
 
 [project.scripts]
 check = "me465.check:main"

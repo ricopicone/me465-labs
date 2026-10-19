@@ -5,7 +5,7 @@ knows where the course scene is and how a lab day opens and closes it.
 
     from me465 import open_lab, settle, close
 
-    scene, arm = open_lab()          # CoppeliaSim running, the UR5 scene loaded, stepping
+    scene, arm = open_lab()          # CoppeliaSim running, the UR5 scene loaded
     arm.command_positions([0, 0, 0, 0, 0, 0])
     settle(scene, arm)
     print(arm.theta(), arm.tip_frame())
@@ -26,10 +26,13 @@ PEDESTAL = 0.4
 
 
 def open_lab(path: str | Path = SCENE):
-    """Connect, load the course scene, and start it in stepping mode.
+    """Connect, load the course scene, and start it running.
 
     Returns `(scene, arm)`: a `screws.coppelia.Scene` and the UR5 as an `Arm`
     in position mode. Anything a previous run left going is stopped first.
+    The simulation is left released, running on its own: a notebook that holds
+    CoppeliaSim in stepping mode while a student reads freezes its window (the
+    "abort execution" banner). `settle` takes the clock when it needs it.
     """
     from screws.coppelia import Scene
 
@@ -43,19 +46,26 @@ def open_lab(path: str | Path = SCENE):
     arm = scene.arm("/UR5")
     arm.mode("position")
     scene.start()
+    scene.release()
     return scene, arm
 
 
 def settle(scene, arm, seconds: float = 6.0, tol: float = 1e-5) -> np.ndarray:
-    """Step until the joints stop moving (or `seconds` pass); return where they stopped."""
-    previous = arm.theta()
-    for _ in range(max(1, int(seconds / scene.dt))):
-        scene.step()
-        now = arm.theta()
-        if np.max(np.abs(now - previous)) < tol:
-            return now
-        previous = now
-    return previous
+    """Step until the joints stop moving (or `seconds` pass); return where they stopped.
+
+    Then hand the clock back to CoppeliaSim, so its window stays live between cells.
+    """
+    try:
+        previous = arm.theta()
+        for _ in range(max(1, int(seconds / scene.dt))):
+            scene.step()
+            now = arm.theta()
+            if np.max(np.abs(now - previous)) < tol:
+                return now
+            previous = now
+        return previous
+    finally:
+        scene.release()
 
 
 def close(scene) -> None:
