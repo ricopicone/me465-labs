@@ -146,15 +146,22 @@ Never edit anything under `labs/`: the course updates those files, and
 `update` refuses to overwrite edited ones. Each lab's folder also has a
 `README.md` saying what to submit.
 
+If JupyterLab is still open from last time, stop it before `uv run update`
+(Ctrl+C in its terminal, or close that terminal). On Windows a running JupyterLab
+blocks the update with "failed to remove file ... lab.exe: Access is denied"; if
+you cannot find its terminal, end `lab.exe` and `python.exe` in Task Manager.
+When CoppeliaSim asks whether to save the scene, answer No; `update` puts the
+course's scene back if it was saved over.
+
 Before you run anything, **write down what you expect it to do**. The simulator
 is the referee, and a run without a prediction teaches you nothing about your
 model.
 
 **If CoppeliaSim's view freezes or turns grey** with a yellow "ZMQ remote API server ...
 abort execution" note, do not click the note: it cuts the notebook off from the simulator.
-That was a bug in versions before 18 October 2026. Save your notebook, then run
-`uv run update`, quit and reopen CoppeliaSim, and in JupyterLab use Kernel > Restart Kernel
-and run the cells again from the top. If you already clicked it, do the same.
+That was a bug in versions before 18 October 2026. Save your notebook, stop JupyterLab,
+run `uv run update`, quit and reopen CoppeliaSim, then
+`uv run lab sim1` and run the cells again from the top. If you already clicked it, do the same.
 
 ## What is in here
 
