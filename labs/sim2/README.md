@@ -1,7 +1,7 @@
 # Sim 2: Tracking a trajectory under feedback, with velocity inputs
 
-**In class Wednesday 11/18. Due Friday 11/20 at noon**, submitted once on the
-course site (no correction round).
+**In class Wednesday 11/18. Due Monday 11/30 at 11:59 pm**, submitted once on
+the course site (no correction round).
 
 In class your group works through `sim2.ipynb` (open it with `uv run lab sim2`,
 which puts your copy in `work/`; run `uv run update` first). It drives the
