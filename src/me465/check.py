@@ -41,12 +41,13 @@ def main() -> None:
 
     from screws.coppelia import SimulatorNotRunning, connect
 
-    from me465 import SCENE, close, open_lab, settle
+    from me465 import SCENE, close, default_port, open_lab, settle
 
+    port = default_port()
     try:
-        sim = connect()
+        sim = connect(port=port)
     except SimulatorNotRunning:
-        fail("CoppeliaSim is not running (nothing answered on port 23000)",
+        fail(f"CoppeliaSim is not running (nothing answered on port {port})",
              "open CoppeliaSim, wait for its window, then run this again. "
              "If it is open, check that a firewall is not blocking localhost.")
     v = sim.getInt32Param(sim.intparam_program_full_version)

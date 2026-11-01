@@ -173,4 +173,42 @@ run `uv run update`, quit and reopen CoppeliaSim, then
   helpers a lab day needs, and `joint_sliders`, six sliders that drive the arm.
 - `src/me465/scenes/ur5.ttt`: the course scene, built by
   `src/me465/build_scene.py` from CoppeliaSim's own UR5 model.
+- `src/me465/capstone.py`: the capstone cell (below), and
+  `src/me465/scenes/pick_place.ttt`, built by `src/me465/build_capstone.py`.
 - `labs/`: one folder per lab.
+
+## The capstone cell
+
+The capstone scene is the course UR5 with a suction cup on its flange, a table, a red
+cube to pick up and a green pad to set it down on.
+
+```python
+from me465 import open_capstone, close
+
+scene, arm, cell = open_capstone()      # CoppeliaSim open; arm in velocity mode, all joints at zero
+T_sc = cell.cube_frame()                # the cube, in {s}
+T_sp = cell.target_frame()              # the pad, in {s}
+# ... your planner and controller drive the arm: arm.command_velocities(dtheta); scene.step()
+cell.grip()                             # suction on: True only if the cup is on a face of the cube
+cell.release()                          # suction off: the cube drops from where it is
+print(cell.placement_error())           # (metres, degrees) from placed
+close(scene)
+```
+
+- **Frames.** Every frame `cell` returns is a 4x4 transform in {s}: the world frame lifted to
+  the top of the pedestal, `T_ws = Trans(0, 0, 0.4)`, as in Sim 1. The table top is z = 0.
+  `arm.tip_frame()` and `arm.robot()` are in the world frame.
+- **The cup.** The cup's face is the frame `tool`, a fixed offset from the flange frame `tip`.
+  Your model's M is the cup's face, not the flange: read the offset off the scene.
+  `cell.tool_frame()` is where the simulator says the cup is, for checking your
+  forward kinematics.
+- **Gripping.** `grip()` holds the cube only if the cup's face is within 15 mm of the centre of
+  a face of the cube and pointing into it (within 10 degrees); otherwise it returns `False` and
+  holds nothing. A held cube moves rigidly with the cup and collides with nothing until
+  `release()`. `cell.reset()` puts the cube back.
+- **Modes.** `open_capstone(mode, theta0)` opens the cell with the arm at the joint angles
+  `theta0` in `mode`: `"velocity"` (the default: `arm.command_velocities`, joint rates in rad/s;
+  nothing stops you exceeding a real UR5's 180 deg/s, so limit them yourself), `"kinematic"`
+  (`arm.command(theta)` sets the joints exactly; for checking kinematics and playing back a
+  plan) or `"position"` (as in Sim 1). Choose the mode when you open: switching a running arm
+  from position to velocity mode makes it jump.

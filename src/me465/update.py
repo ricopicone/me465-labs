@@ -18,7 +18,7 @@ COURSE_REPO = "ricopicone/me465-labs"
 COURSE_URL = f"https://github.com/{COURSE_REPO}.git"
 # Files CoppeliaSim writes when a student saves the scene: never anyone's work, so an
 # update puts them back instead of refusing to pull (Sim 1, October 2026).
-SCENES = ("src/me465/scenes/ur5.ttt",)
+SCENES = ("src/me465/scenes/ur5.ttt", "src/me465/scenes/pick_place.ttt")
 
 
 def _origin_is_the_course() -> bool | None:

@@ -14,6 +14,7 @@ knows where the course scene is and how a lab day opens and closes it.
 
 from __future__ import annotations
 
+import os
 from pathlib import Path
 
 import numpy as np
@@ -24,19 +25,36 @@ SCENE = Path(__file__).resolve().parent / "scenes" / "ur5.ttt"
 #: Height of the stand the UR5 is bolted to, in metres. MR's {s} sits on top of it.
 PEDESTAL = 0.4
 
+#: CoppeliaSim's remote API port. Set ME465_PORT to talk to a second instance.
+DEFAULT_PORT = 23000
 
-def open_lab(path: str | Path = SCENE):
+
+def default_port(port: int | None = None) -> int:
+    """`port` if given, else $ME465_PORT, else 23000 (CoppeliaSim's own default)."""
+    if port is not None:
+        return int(port)
+    return int(os.environ.get("ME465_PORT", DEFAULT_PORT))
+
+
+def open_lab(path: str | Path = SCENE, *, port: int | None = None, mode: str = "position", theta0=None):
     """Connect, load the course scene, and start it running.
 
     Returns `(scene, arm)`: a `screws.coppelia.Scene` and the UR5 as an `Arm`
-    in position mode. Anything a previous run left going is stopped first.
-    The simulation is left released, running on its own: a notebook that holds
-    CoppeliaSim in stepping mode while a student reads freezes its window (the
-    "abort execution" banner). `settle` takes the clock when it needs it.
+    in `mode` ("position", "velocity" or "kinematic"), starting from the joint
+    angles `theta0` (default: the scene's, all zero). Anything a previous run left
+    going is stopped first. The simulation is left released, running on its own:
+    a notebook that holds CoppeliaSim in stepping mode while a student reads
+    freezes its window (the "abort execution" banner). `settle` takes the clock
+    when it needs it.
+
+    Choose the mode here, before the simulation starts. Switching a running arm
+    from position to velocity mode makes it jump: CoppeliaSim drives every joint at
+    its speed limit for one step (about 5 degrees each, 0.1 m at the tool).
+    Kinematic to velocity and back is clean.
     """
     from screws.coppelia import Scene
 
-    scene = Scene()
+    scene = Scene(port=default_port(port))
     sim = scene.sim
     if sim.getSimulationState() != sim.simulation_stopped:
         scene.stop()
@@ -44,7 +62,13 @@ def open_lab(path: str | Path = SCENE):
             pass
     sim.loadScene(str(Path(path).resolve()))
     arm = scene.arm("/UR5")
-    arm.mode("position")
+    arm.mode(mode)
+    if theta0 is not None:
+        arm.teleport(theta0)
+        if mode == "position":
+            arm.command_positions(theta0)
+    if mode == "velocity":
+        arm.command_velocities(np.zeros(arm.n))
     scene.start()
     scene.release()
     return scene, arm
@@ -115,3 +139,7 @@ def joint_sliders(scene, arm, *, continuous: bool = False, settle_seconds: float
     display(widgets.VBox([*sliders, out]))
     send()
     return sliders
+
+
+# The capstone cell builds on open_lab, so it is imported last.
+from .capstone import CAPSTONE_SCENE, Cell, open_capstone  # noqa: E402
