@@ -40,11 +40,11 @@ CAPSTONE_SCENE = Path(__file__).resolve().parent / "scenes" / "pick_place.ttt"
 T_WS = np.array([[1.0, 0, 0, 0], [0, 1.0, 0, 0], [0, 0, 1.0, PEDESTAL], [0, 0, 0, 1.0]])
 T_SW = np.linalg.inv(T_WS)
 
-#: Edge length of the cube, metres.
+#: Edge length of the cube, meters.
 CUBE_SIZE = 0.05
 
 #: How close the tool face must be to a face of the cube for grip() to take hold.
-GRIP_TOLERANCE = 0.015  # metres, from the tool face's origin to the centre of a cube face
+GRIP_TOLERANCE = 0.015  # meters, from the tool face's origin to the center of a cube face
 GRIP_ANGLE = 10.0  # degrees, between the tool's z axis and the inward normal of that face
 
 
@@ -92,13 +92,13 @@ class Cell:
         return T_SW @ self.scene.frame(handle)
 
     def cube_frame(self) -> np.ndarray:
-        """T_sc: the cube's frame in {s}, at its centre, axes along its edges."""
+        """T_sc: the cube's frame in {s}, at its center, axes along its edges."""
         return self._frame(self.cube)
 
     def target_frame(self) -> np.ndarray:
-        """T_sp: the target pad's frame in {s}, on the table surface at the pad's centre, z up.
+        """T_sp: the target pad's frame in {s}, on the table surface at the pad's center, z up.
 
-        A cube is placed when its centre is CUBE_SIZE / 2 above this origin and its edges line
+        A cube is placed when its center is CUBE_SIZE / 2 above this origin and its edges line
         up with the pad's (any face down: a cube looks the same 24 ways)."""
         return self._frame(self.target)
 
@@ -118,15 +118,15 @@ class Cell:
         for axis in range(3):
             for sign in (1.0, -1.0):
                 n = sign * R[:, axis]  # outward normal of this face
-                centre = p + (CUBE_SIZE / 2) * n
-                d = float(np.linalg.norm(p_tool - centre))
+                center = p + (CUBE_SIZE / 2) * n
+                d = float(np.linalg.norm(p_tool - center))
                 a = float(np.degrees(np.arccos(np.clip(z_tool @ -n, -1.0, 1.0))))
                 if d <= tol and a <= angle and (best is None or d < best[0]):
                     best = (d, a)
         return best
 
     def can_grip(self, tol: float = GRIP_TOLERANCE, angle: float = GRIP_ANGLE) -> bool:
-        """Would grip() take hold now? The tool face's origin within `tol` metres of the centre
+        """Would grip() take hold now? The tool face's origin within `tol` meters of the center
         of a face of the cube, and the tool's z axis within `angle` degrees of pointing into it."""
         return self._face_under_tool(tol, angle) is not None
 
@@ -134,8 +134,8 @@ class Cell:
         """Switch the suction on. Returns True and holds the cube if the tool face is on a face
         of it (see can_grip); otherwise returns False and holds nothing.
 
-        A held cube moves rigidly with the tool, where it was when gripped: an off-centre grasp
-        stays off-centre. It no longer collides with anything until it is released."""
+        A held cube moves rigidly with the tool, where it was when gripped: an off-center grasp
+        stays off-center. It no longer collides with anything until it is released."""
         if self.holding:
             return True
         if not self.can_grip(tol, angle):
@@ -171,9 +171,9 @@ class Cell:
     # ----- the score --------------------------------------------------------------------
 
     def placement_error(self) -> tuple[float, float]:
-        """(distance, angle): how far the cube is from placed, in metres and degrees.
+        """(distance, angle): how far the cube is from placed, in meters and degrees.
 
-        distance is from the cube's centre to the point CUBE_SIZE / 2 above the pad's centre;
+        distance is from the cube's center to the point CUBE_SIZE / 2 above the pad's center;
         angle is the smallest rotation that lines the cube up with the pad, over the 24 ways a
         cube can sit. A cube that toppled shows up in both."""
         T_sc, T_sp = self.cube_frame(), self.target_frame()

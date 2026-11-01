@@ -157,7 +157,7 @@ Before you run anything, **write down what you expect it to do**. The simulator
 is the referee, and a run without a prediction teaches you nothing about your
 model.
 
-**If CoppeliaSim's view freezes or turns grey** with a yellow "ZMQ remote API server ...
+**If CoppeliaSim's view freezes or turns gray** with a yellow "ZMQ remote API server ...
 abort execution" note, do not click the note: it cuts the notebook off from the simulator.
 That was a bug in versions before 18 October 2026. Save your notebook, stop JupyterLab,
 run `uv run update`, quit and reopen CoppeliaSim, then
@@ -191,7 +191,7 @@ T_sp = cell.target_frame()              # the pad, in {s}
 # ... your planner and controller drive the arm: arm.command_velocities(dtheta); scene.step()
 cell.grip()                             # suction on: True only if the cup is on a face of the cube
 cell.release()                          # suction off: the cube drops from where it is
-print(cell.placement_error())           # (metres, degrees) from placed
+print(cell.placement_error())           # (meters, degrees) from placed
 close(scene)
 ```
 
@@ -202,7 +202,7 @@ close(scene)
   Your model's M is the cup's face, not the flange: read the offset off the scene.
   `cell.tool_frame()` is where the simulator says the cup is, for checking your
   forward kinematics.
-- **Gripping.** `grip()` holds the cube only if the cup's face is within 15 mm of the centre of
+- **Gripping.** `grip()` holds the cube only if the cup's face is within 15 mm of the center of
   a face of the cube and pointing into it (within 10 degrees); otherwise it returns `False` and
   holds nothing. A held cube moves rigidly with the cup and collides with nothing until
   `release()`. `cell.reset()` puts the cube back.

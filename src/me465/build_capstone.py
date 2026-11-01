@@ -26,7 +26,7 @@ from screws.coppelia import connect
 from me465 import PEDESTAL, SCENE, default_port
 from me465.capstone import CAPSTONE_SCENE, CUBE_SIZE
 
-#: Cup face from the flange, along the flange's z, metres.
+#: Cup face from the flange, along the flange's z, meters.
 TOOL_LENGTH = 0.10
 
 #: Where the cube starts and where it goes: (x, y) in {s} and a yaw in degrees.
@@ -45,7 +45,7 @@ def _shape(sim, h, *, static: bool, respondable: bool) -> None:
     sim.setObjectInt32Param(h, sim.shapeintparam_respondable, 1 if respondable else 0)
 
 
-def _colour(sim, h, rgb) -> None:
+def _color(sim, h, rgb) -> None:
     sim.setShapeColor(h, None, sim.colorcomponent_ambient_diffuse, list(rgb))
 
 
@@ -74,8 +74,8 @@ def build(port: int | None = None) -> None:
         sim.setObjectMatrix(h, [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, z], tip)
     for h in (stalk, cup):
         _shape(sim, h, static=True, respondable=False)
-    _colour(sim, stalk, (0.6, 0.6, 0.62))
-    _colour(sim, cup, (0.12, 0.12, 0.14))
+    _color(sim, stalk, (0.6, 0.6, 0.62))
+    _color(sim, cup, (0.12, 0.12, 0.14))
 
     # The table: a solid block from the floor to the top of the pedestal.
     x0, x1, y0, y1 = TABLE
@@ -83,7 +83,7 @@ def build(port: int | None = None) -> None:
     sim.setObjectAlias(table, "table")
     _shape(sim, table, static=True, respondable=True)
     _place(sim, table, (x0 + x1) / 2, (y0 + y1) / 2, PEDESTAL / 2)
-    _colour(sim, table, (0.78, 0.70, 0.55))
+    _color(sim, table, (0.78, 0.70, 0.55))
 
     # The cube, resting on the table.
     cube = sim.createPrimitiveShape(sim.primitiveshape_cuboid, [CUBE_SIZE] * 3, 0)
@@ -92,7 +92,7 @@ def build(port: int | None = None) -> None:
     sim.computeMassAndInertia(cube, CUBE_MASS / CUBE_SIZE**3)
     cx, cy, cyaw = CUBE_START
     _place(sim, cube, cx, cy, PEDESTAL + CUBE_SIZE / 2, cyaw)
-    _colour(sim, cube, (0.73, 0.05, 0.18))
+    _color(sim, cube, (0.73, 0.05, 0.18))
 
     # The target: a frame on the table surface, and a pad to show it.
     target = sim.createDummy(0.02)
@@ -104,7 +104,7 @@ def build(port: int | None = None) -> None:
     _shape(sim, pad, static=True, respondable=False)
     sim.setObjectParent(pad, target, False)
     sim.setObjectMatrix(pad, [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0.001], target)
-    _colour(sim, pad, (0.20, 0.65, 0.30))
+    _color(sim, pad, (0.20, 0.65, 0.30))
 
     CAPSTONE_SCENE.parent.mkdir(parents=True, exist_ok=True)
     sim.saveScene(str(CAPSTONE_SCENE))
